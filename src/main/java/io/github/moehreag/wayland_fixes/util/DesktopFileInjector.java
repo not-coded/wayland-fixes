@@ -13,7 +13,6 @@ import java.util.Objects;
 
 import io.github.moehreag.wayland_fixes.WaylandFixes;
 import net.fabricmc.loader.api.FabricLoader;
-import net.minecraft.resource.InputSupplier;
 import org.apache.commons.io.IOUtils;
 
 public class DesktopFileInjector {
@@ -39,12 +38,12 @@ public class DesktopFileInjector {
 
 	}
 
-	public static void setIcon(List<InputSupplier<InputStream>> icons) {
-		for (InputSupplier<InputStream> supplier : icons) {
+	public static void setIcon(ArrayList<InputStream> icons) {
+		for (InputStream supplier : icons) {
 			try {
-				BufferedImage image = ImageIO.read(supplier.get());
+				BufferedImage image = ImageIO.read(supplier);
 				Path target = getIconFileLocation(image.getWidth(), image.getHeight());
-				injectFile(target, IOUtils.toByteArray(supplier.get()));
+				injectFile(target, supplier.readAllBytes());
 			} catch (IOException e) {
 				return;
 			}

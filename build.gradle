@@ -8,7 +8,7 @@ plugins {
 }
 
 sourceCompatibility = JavaVersion.VERSION_1_8
-targetCompatibility = JavaVersion.VERSION_1_8
+targetCompatibility = JavaVersion.VERSION_1_9
 
 base.archivesName = project.archives_base_name
 version = project.mod_version
@@ -30,6 +30,9 @@ dependencies {
     minecraft "com.mojang:minecraft:${project.minecraft_version}"
     mappings "net.fabricmc:yarn:${project.mappings}"
     modImplementation "net.fabricmc:fabric-loader:${project.loader_version}"
+
+    include(implementation(annotationProcessor("io.github.llamalad7:mixinextras-fabric:${project.mixin_extras_version}")))
+    implementation "org.lwjgl:lwjgl-glfw:3.3.2"
 }
 
 processResources {
@@ -45,7 +48,7 @@ processResources {
 // see http://yodaconditions.net/blog/fix-for-java-file-encoding-problems-with-gradle.html
 tasks.withType(JavaCompile).configureEach {
     it.options.encoding = "UTF-8"
-    if (JavaVersion.current().isJava9Compatible()) it.options.release = 8
+    if (JavaVersion.current().isJava9Compatible()) it.options.release = 9
 }
 
 java {

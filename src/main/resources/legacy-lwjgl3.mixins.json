@@ -4,9 +4,7 @@
 	"package": "io.github.moehreag.wayland_fixes.mixin",
 	"compatibilityLevel": "JAVA_8",
 	"client": [
-		"MixinGameRendererDrawVirtualCursor",
-		"MixinMinecraftSetup",
-		"MixinMouse",
+		"MixinGLX",
 		"MixinWindow"
 	],
 	"injectors": {
