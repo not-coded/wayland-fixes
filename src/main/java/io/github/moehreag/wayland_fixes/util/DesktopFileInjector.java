@@ -2,12 +2,14 @@ package io.github.moehreag.wayland_fixes.util;
 
 import javax.imageio.ImageIO;
 import java.awt.image.BufferedImage;
+import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.Objects;
 
@@ -38,13 +40,28 @@ public class DesktopFileInjector {
 
 	}
 
-	public static void setIcon(ArrayList<InputStream> icons) {
-		for (InputStream supplier : icons) {
+	public static void setIcon(InputStream icon16, InputStream icon32) {
+		byte[] icon16Byte;
+		byte[] icon32Byte;
+
+		try {
+			// https://stackoverflow.com/questions/58534138/does-files-readallbytes-closes-the-inputstream-after-reading-the-file
+			icon16Byte = icon16.readAllBytes();
+			icon32Byte = icon32.readAllBytes();
+		} catch (IOException e) {
+			e.printStackTrace();
+			return;
+		}
+
+		ArrayList<byte[]> icons = new ArrayList<>(Arrays.asList(icon16Byte, icon32Byte));
+
+		for(byte[] bytes : icons) {
 			try {
-				BufferedImage image = ImageIO.read(supplier);
+				BufferedImage image = ImageIO.read(new ByteArrayInputStream(bytes));
 				Path target = getIconFileLocation(image.getWidth(), image.getHeight());
-				injectFile(target, supplier.readAllBytes());
+				injectFile(target, bytes);
 			} catch (IOException e) {
+				e.printStackTrace();
 				return;
 			}
 		}

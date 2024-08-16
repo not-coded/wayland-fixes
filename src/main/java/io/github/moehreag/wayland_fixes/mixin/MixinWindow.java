@@ -1,11 +1,7 @@
 package io.github.moehreag.wayland_fixes.mixin;
 
-import java.io.InputStream;
-import java.nio.IntBuffer;
-import java.util.ArrayList;
-import java.util.Arrays;
+import java.io.*;
 
-import io.github.moehreag.wayland_fixes.WaylandFixes;
 import io.github.moehreag.wayland_fixes.util.DesktopFileInjector;
 import net.minecraft.client.WindowEventHandler;
 import net.minecraft.client.WindowSettings;
@@ -19,11 +15,8 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
 @Mixin(Window.class)
 public class MixinWindow {
-
 	@Inject(method = "<init>", at = @At(value = "INVOKE", target = "Lorg/lwjgl/glfw/GLFW;glfwDefaultWindowHints()V", shift = At.Shift.AFTER, remap = false))
 	private void onWindowHints(WindowEventHandler windowEventHandler, MonitorTracker monitorTracker, WindowSettings windowSettings, String string, String string2, CallbackInfo ci) {
-		if(WaylandFixes.disabled) return;
-
 		if (GLFW.glfwGetPlatform() == GLFW.GLFW_PLATFORM_WAYLAND) {
 			GLFW.glfwWindowHint(GLFW.GLFW_FOCUS_ON_SHOW, GLFW.GLFW_FALSE); // disable an unsupported function on wayland
 			DesktopFileInjector.inject();
@@ -32,11 +25,9 @@ public class MixinWindow {
 	}
 
 	@Inject(method = "setIcon", at = @At("HEAD"), cancellable = true)
-	private void injectIcon(InputStream inputStream, InputStream inputStream2, CallbackInfo ci) {
-		if(WaylandFixes.disabled) return;
-
+	private void injectIcon(InputStream icon16, InputStream icon32, CallbackInfo ci) {
 		if (GLFW.glfwGetPlatform() == GLFW.GLFW_PLATFORM_WAYLAND) {
-            DesktopFileInjector.setIcon(new ArrayList<>(Arrays.asList(inputStream, inputStream2)));
+			DesktopFileInjector.setIcon(icon16, icon32);
             ci.cancel();
         }
 	}
