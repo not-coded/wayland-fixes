@@ -18,7 +18,10 @@ import net.fabricmc.loader.api.FabricLoader;
 import org.apache.commons.io.IOUtils;
 
 public class DesktopFileInjector {
-	public static final String APP_ID = "com.mojang.minecraft";
+	// The taskbar icon is set to the minecraft launcher's icon if you have it installed
+	// Adding '.java-edition' fixes it (due to being recognized as a new app)
+	public static final String APP_ID = "com.mojang.minecraft.java-edition";
+
 	private static final String ICON_NAME = "minecraft.png";
 	private static final String FILE_NAME = APP_ID + ".desktop";
 	private static final String RESOURCE_LOCATION = "/assets/wayland_fixes/" + FILE_NAME;
