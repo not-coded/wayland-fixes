@@ -3,6 +3,7 @@ package io.github.moehreag.wayland_fixes;
 import net.fabricmc.api.ModInitializer;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
+import org.lwjgl.glfw.GLFW;
 
 public class WaylandFixes implements ModInitializer {
 	public static final Logger LOGGER = LogManager.getLogger(WaylandFixes.class);
@@ -44,5 +45,23 @@ public class WaylandFixes implements ModInitializer {
 		// https://discourse.glfw.org/t/using-glfw-under-wayland/1547
 		// GLFW_SCALE_TO_MONITOR
 		// https://www.glfw.org/docs/3.3/window_guide.html#window_scale
+	}
+
+	public static boolean isWayland() {
+		try {
+			return GLFW.glfwGetPlatform() == GLFW.GLFW_PLATFORM_WAYLAND;
+		} catch (NoSuchMethodError ignored) { // <3.3.0
+			return false;
+		}
+	}
+
+	public static boolean supportsWayland() {
+		try {
+			return GLFW.glfwPlatformSupported(GLFW.GLFW_PLATFORM_WAYLAND);
+		} catch (NoSuchMethodError ignored) { // <3.3.0
+			WaylandFixes.LOGGER.warn("WaylandFixes is disabling itself due to the LWJGL Version being too low.");
+			WaylandFixes.LOGGER.warn("Please update to a LWJGL version such as '3.3.1' or higher.");
+			return false;
+		}
 	}
 }
