@@ -35,16 +35,6 @@ public class WaylandFixes implements ModInitializer {
 
 		// solution:
 		// add config option whether to use primary screen or let user specify screen
-
-
-
-		// optionally auto-scale gui scale depending on scaling
-		// GLFW.glfwGetWindowContentScale(window.getHandle(), xScaleArray, yScaleArray);
-		// e.g. 1920x1080 -> 1.0, 1.0
-		// e.g. 3840x2168 at 200% scaling -> 2.0, 2.0
-		// https://discourse.glfw.org/t/using-glfw-under-wayland/1547
-		// GLFW_SCALE_TO_MONITOR
-		// https://www.glfw.org/docs/3.3/window_guide.html#window_scale
 	}
 
 	public static boolean isWayland() {
